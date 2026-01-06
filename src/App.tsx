@@ -3,7 +3,6 @@ import { ref, onValue, off, get } from 'firebase/database';
 import { database, listenToAuthChanges, logout, getCurrentUserEmail } from './config/firebase';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { Word, TrainingMode, Level, WordType } from './types';
-import { Language } from './config/translations';
 import { shuffle } from './utils/helpers';
 import Trainer from './components/Trainer';
 import AddWord from './components/AddWord';
@@ -19,7 +18,7 @@ import menuIcon from './icos/menu.svg';
 import './App.css';
 
 function AppContent() {
-  const { language, setLanguage, t } = useLanguage();
+  const { t } = useLanguage();
   const [uid, setUid] = useState<string | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [words, setWords] = useState<Word[]>([]);

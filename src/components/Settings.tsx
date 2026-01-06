@@ -6,9 +6,11 @@ import './Settings.css';
 interface SettingsProps {
   onClose: () => void;
   onApply: (level: Level, type: WordType, mode: TrainingMode) => void;
-  onReset: () => void;  onResetStats?: () => void;}
+  onReset: () => void;
+  onResetStats?: () => void;
+}
 
-const Settings: React.FC<SettingsProps> = ({ onClose, onApply, onReset, onResetStats }) => {
+const Settings: React.FC<SettingsProps> = ({ onClose, onApply: _onApply, onReset: _onReset, onResetStats: _onResetStats }) => {
   const { t } = useLanguage();
   const [level, setLevel] = useState<Level>('a1');
   const [wordType, setWordType] = useState<WordType>('nouns');
@@ -17,16 +19,6 @@ const Settings: React.FC<SettingsProps> = ({ onClose, onApply, onReset, onResetS
   const [showLevelOptions, setShowLevelOptions] = useState(false);
   const [showTypeOptions, setShowTypeOptions] = useState(false);
   const [showModeOptions, setShowModeOptions] = useState(false);
-
-  const handleApply = () => {
-    onApply(level, wordType, mode);
-    onClose();
-  };
-
-  const handleReset = () => {
-    onReset();
-    onClose();
-  };
 
   const getLevelLabel = (lvl: Level) => {
     return lvl === 'randomAll' ? t('randomAll') : lvl.toUpperCase();
