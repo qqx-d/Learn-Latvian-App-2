@@ -27,4 +27,4 @@ node_modules
 
 # Nod add
 _Scripts
-*.env
+*.envdist/
