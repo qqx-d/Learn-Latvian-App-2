@@ -16,6 +16,8 @@ export interface Translations {
   apply: string;
   reset: string;
   resetStats: string;
+  installApp: string;
+  installAppAlready: string;
   nouns: string;
   verbs: string;
   adjectives: string;
@@ -91,7 +93,14 @@ export interface Translations {
   sendCodeError: string;
   authError: string;
   accountExists: string;
+  back: string;
   logout: string;
+  wordleTab: string;
+  wordleInstruction: string;
+  wordleWin: string;
+  wordleLose: string;
+  wordleNewGame: string;
+  wordleShortGuess: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -110,7 +119,9 @@ export const translations: Record<Language, Translations> = {
     settingsTitle: "Настройки",
     apply: "Применить",
     reset: "Сбросить",
-    resetStats: "Сброс счёта",
+    resetStats: "Сброс прогрессии",
+    installApp: "Установить приложение",
+    installAppAlready: "Приложение уже установлено или добавлено на главный экран.",
     nouns: "Существительные",
     verbs: "Глаголы",
     adjectives: "Прилагательные",
@@ -186,7 +197,14 @@ export const translations: Record<Language, Translations> = {
     sendCodeError: "Не удалось отправить код. Проверьте настройки Google Apps.",
     authError: "Неверный логин или пароль",
     accountExists: "Аккаунт с этой почтой уже зарегистрирован",
-    logout: "Выйти"
+    back: "Назад",
+    logout: "Выйти",
+    wordleTab: "Wordle",
+    wordleInstruction: "Угадайте латышское слово из 5 букв за 6 попыток.",
+    wordleWin: "Отлично! Слово угадано.",
+    wordleLose: "Попытки закончились. Слово было",
+    wordleNewGame: "Новая игра",
+    wordleShortGuess: "Введите 5 букв, чтобы проверить"
   },
   en: {
     title: "Word Trainer",
@@ -204,6 +222,8 @@ export const translations: Record<Language, Translations> = {
     apply: "Apply",
     reset: "Reset",
     resetStats: "Reset Score",
+    installApp: "Install app",
+    installAppAlready: "App is already installed or added to your home screen.",
     nouns: "Nouns",
     verbs: "Verbs",
     adjectives: "Adjectives",
@@ -279,7 +299,14 @@ export const translations: Record<Language, Translations> = {
     sendCodeError: "Could not send the code. Check Google Apps settings.",
     authError: "Invalid login or password",
     accountExists: "Account with this email is already registered",
-    logout: "Log out"
+    back: "Back",
+    logout: "Log out",
+    wordleTab: "Wordle",
+    wordleInstruction: "Guess the 5-letter Latvian word in 6 tries.",
+    wordleWin: "Great! You found the word.",
+    wordleLose: "No tries left. The word was",
+    wordleNewGame: "New game",
+    wordleShortGuess: "Type 5 letters to check"
   },
   lv: {
     title: "Vārdu treniņš",
@@ -297,6 +324,8 @@ export const translations: Record<Language, Translations> = {
     apply: "Apstiprināt",
     reset: "Atiestatīt",
     resetStats: "Nullēt rezultātu",
+    installApp: "Instalēt lietotni",
+    installAppAlready: "Lietotne jau ir instalēta vai pievienota jūsu sāumekrānam.",
     nouns: "Lietvārdi",
     verbs: "Darbības vārdi",
     adjectives: "Īpašības vārdi",
@@ -372,6 +401,13 @@ export const translations: Record<Language, Translations> = {
     sendCodeError: "Neizdevās nosūtīt kodu. Pārbaudiet Google Apps iestatījumus.",
     authError: "Nepareizs lietotājvārds vai parole",
     accountExists: "Konts ar šo e-pastu jau ir reģistrēts",
-    logout: "Iziet"
+    back: "Atpakaļ",
+    logout: "Iziet",
+    wordleTab: "Wordle",
+    wordleInstruction: "Uzminiet 5 burtu latviešu vārdu 6 mēģinājumos.",
+    wordleWin: "Lieliski! Vārds ir uzminēts.",
+    wordleLose: "Mēģinājumi beigušies. Vārds bija",
+    wordleNewGame: "Jauna spēle",
+    wordleShortGuess: "Ievadiet 5 burtus, lai pārbaudītu"
   }
 };

@@ -1,0 +1,14 @@
+// Fallback list of Latvian five-letter nouns/plurals for Wordle (letters only, no digits)
+export const wordleNouns5: string[] = [
+  "SAULE","SKOLA","LAPSA","PUTNS","MAIZE","PIENS","SVECE","KARTE","LAIME",
+  "LAIVA","LAMPA","KAKIS","RUDZI","OZOLS","LACIS","TELPA","BERNS",
+  "MEITA","KLASE","ZVANS","MAJAS","VEJAS","SIRDS","MAMMA","TETIS",
+  "BILDE","KRASA","GATVE","KAUSS","PILIS","LIETA","STIGA","VILKS",
+  "SUNIS","ZUPAS","BALLE","ZIVIS","ZEMES","SOMAS","STOPS","GRIDA",
+  "GRUPA","SEGAS","SKATS","RITMS","PLAVA","TAKAS","BAKAS","MILTS",
+  "BALVA","SIERS","BURKA","DESAS","KASTE","DURVS","PIRKS","TELTS",
+  "PUIKA","SENIS","LAPAS","MIERS","TIRGS","BIRZE","GALDS","VARDI",
+  "ZIEMA","ZIRGS","TAURE","GAILS","SAIME","DARZS","KROGS","BARKA",
+  "SLAVA","EGLES","VARTI","MALKA","SALAS","SALNA","LUKAS","SOLIS",
+  "SUMMA","KOLNS","DEGUN","RUDEN","RIEPA","BRUVE"
+];

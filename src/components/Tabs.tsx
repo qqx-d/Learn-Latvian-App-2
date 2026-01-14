@@ -13,7 +13,7 @@ const Tabs: React.FC<TabsProps> = ({ activeTab, onTabChange, labels }) => {
       {Object.entries(labels).map(([key, label]) => (
         <button
           key={key}
-          className={`tab-btn ${activeTab === key ? 'active' : ''}`}
+          className={`tab-btn ${activeTab === key ? 'active' : ''} ${key === 'wordle' ? 'tab-btn-wordle' : ''}`}
           onClick={() => onTabChange(key)}
         >
           {label}

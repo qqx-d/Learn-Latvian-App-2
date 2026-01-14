@@ -5,7 +5,6 @@ import {
   saveUserProfile,
   requestVerificationCode,
   verifyCodeWithBackend,
-  checkEmailExists,
 } from '../config/firebase';
 import { useLanguage } from '../contexts/LanguageContext';
 import './Auth.css';
@@ -75,14 +74,6 @@ const Auth = ({ onAuthenticated }: AuthProps) => {
 
     setLoading(true);
     try {
-      // Check if account already exists
-      const exists = await checkEmailExists(email.trim());
-      if (exists) {
-        setError(t('accountExists'));
-        setLoading(false);
-        return;
-      }
-
       const newTicket = await requestVerificationCode(email.trim());
       setTicket(newTicket);
       setMessage(t('codeSent'));
@@ -118,8 +109,12 @@ const Auth = ({ onAuthenticated }: AuthProps) => {
       const uid = await registerWithEmail(email.trim(), password);
       await saveUserProfile(uid, email.trim());
       onAuthenticated(uid);
-    } catch (err) {
-      setError(t('authError'));
+    } catch (err: any) {
+      if (err.code === 'auth/email-already-in-use') {
+        setError(t('accountExists'));
+      } else {
+        setError(t('authError'));
+      }
     } finally {
       setLoading(false);
     }
@@ -143,16 +138,30 @@ const Auth = ({ onAuthenticated }: AuthProps) => {
     }
 
     return (
-      <button className="auth-button" onClick={handleVerify} disabled={loading}>
-        {loading ? '...' : t('verifyCode')}
-      </button>
+      <div className="auth-buttons-group">
+        <button className="auth-button" onClick={handleVerify} disabled={loading}>
+          {loading ? '...' : t('verifyCode')}
+        </button>
+        <button 
+          type="button" 
+          className="auth-button-secondary" 
+          onClick={() => {
+            setStep('form');
+            setCode('');
+            setTicket(null);
+            resetMessages();
+          }}
+        >
+          {t('back') || 'Назад'}
+        </button>
+      </div>
     );
   };
 
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
-        <h2>{t('authTitle')}</h2>
+        <h2>{mode === 'login' ? t('login') : t('register')}</h2>
         <p className="auth-subtitle">{t('authSubtitle')}</p>
 
         <div className="inputs">

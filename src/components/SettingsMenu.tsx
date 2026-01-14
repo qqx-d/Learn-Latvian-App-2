@@ -9,9 +9,13 @@ type SettingsMenuProps = {
   userEmail: string | null;
   onLogout: () => void;
   onResetStats?: () => void;
+  canInstallApp?: boolean;
+  onInstallApp?: () => void;
+  showInstallButton?: boolean;
+  version?: string;
 };
 
-const SettingsMenu = ({ isOpen, onClose, userEmail, onLogout, onResetStats }: SettingsMenuProps) => {
+const SettingsMenu = ({ isOpen, onClose, userEmail, onLogout, onResetStats, canInstallApp, onInstallApp, showInstallButton, version }: SettingsMenuProps) => {
   const { language, setLanguage, t } = useLanguage();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -85,10 +89,20 @@ const SettingsMenu = ({ isOpen, onClose, userEmail, onLogout, onResetStats }: Se
             </div>
           )}
 
+          {showInstallButton && onInstallApp && (
+            <button onClick={onInstallApp} className="install-app-btn">
+              {t('installApp')}
+            </button>
+          )}
+
           {onResetStats && (
             <button onClick={onResetStats} className="reset-stats-btn">
-              ⊘ {t('resetStats')}
+              {t('resetStats')}
             </button>
+          )}
+
+          {version && (
+            <div className="settings-version">{version}</div>
           )}
         </div>
       </div>

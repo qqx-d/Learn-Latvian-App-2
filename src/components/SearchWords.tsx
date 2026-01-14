@@ -4,6 +4,8 @@ import './SearchWords.css';
 
 interface SearchWordsProps {
   onClose: () => void;
+  initialQuery?: string;
+  autoSearch?: boolean;
 }
 
 interface SimilarWord {
@@ -19,20 +21,42 @@ interface SearchResult {
   similarWords?: SimilarWord[];
 }
 
-const SearchWords: React.FC<SearchWordsProps> = ({ onClose }) => {
+const SearchWords: React.FC<SearchWordsProps> = ({ onClose, initialQuery, autoSearch }) => {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [result, setResult] = useState<SearchResult | null>(null);
   const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [bootSearched, setBootSearched] = useState(false);
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
+  const translateWord = async (word: string): Promise<string | null> => {
+    try {
+      const workerUrl = 'https://latvial-learn.latvial-learn.workers.dev';
+      const response = await fetch(`${workerUrl}/translate?text=${encodeURIComponent(word.toLowerCase())}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.translation || null;
+      }
+    } catch (err) {
+      console.warn('Translation failed:', err);
+    }
+    return null;
+  };
+
+  const handleSearch = async (queryFromOutside?: string | unknown) => {
+    const queryRaw = queryFromOutside ?? searchQuery;
+    const query = (typeof queryRaw === 'string' ? queryRaw : String(queryRaw ?? '')).trim();
+    if (!query) {
       setError(t('enterWord') || 'Ievadiet vārdu');
       setSuggestions([]);
       setResult(null);
       return;
+    }
+
+    // keep controlled input in sync when called from outside
+    if (queryFromOutside) {
+      setSearchQuery(query);
     }
 
     setLoading(true);
@@ -44,7 +68,7 @@ const SearchWords: React.FC<SearchWordsProps> = ({ onClose }) => {
     // Only use Cloudflare Worker (no local dictionary)
     try {
       const workerUrl = 'https://latvial-learn.latvial-learn.workers.dev';
-      const response = await fetch(`${workerUrl}/search?word=${encodeURIComponent(searchQuery)}`);
+      const response = await fetch(`${workerUrl}/search?word=${encodeURIComponent(query.toLowerCase())}`);
 
       if (response.ok) {
         const data: SearchResult = await response.json();
@@ -63,7 +87,7 @@ const SearchWords: React.FC<SearchWordsProps> = ({ onClose }) => {
           return;
         }
 
-        const normalizedQuery = searchQuery.trim().toLowerCase();
+        const normalizedQuery = query.trim().toLowerCase();
         const isSameWord = data.word?.toLowerCase() === normalizedQuery;
         const hasNoDetails = !data.verbalization && !data.translation;
 
@@ -80,14 +104,49 @@ const SearchWords: React.FC<SearchWordsProps> = ({ onClose }) => {
         return;
       }
 
-      // Non-200 response from worker (e.g., 404) -> treat as not found
+      // Non-200 response from worker (e.g., 404) -> try translation fallback
+      const translated = await translateWord(query);
+      if (translated && translated.toLowerCase() !== query.toLowerCase()) {
+        const retryResponse = await fetch(`${workerUrl}/search?word=${encodeURIComponent(translated.toLowerCase())}`);
+        if (retryResponse.ok) {
+          const retryData: SearchResult = await retryResponse.json();
+          if (retryData.word || retryData.verbalization || retryData.translation) {
+            setResult(retryData);
+            setSuggestions([]);
+            setError(null);
+            setLoading(false);
+            return;
+          }
+        }
+      }
+      
       setResult(null);
       setSuggestions([]);
       setError(t('wordNotFound') || 'Vārds nav atrasts');
       setLoading(false);
       return;
     } catch (err) {
-      // Worker unavailable -> fall back to not found
+      // Worker unavailable -> try translation fallback before giving up
+      try {
+        const translated = await translateWord(query);
+        if (translated && translated.toLowerCase() !== query.toLowerCase()) {
+          const workerUrl = 'https://latvial-learn.latvial-learn.workers.dev';
+          const retryResponse = await fetch(`${workerUrl}/search?word=${encodeURIComponent(translated.toLowerCase())}`);
+          if (retryResponse.ok) {
+            const retryData: SearchResult = await retryResponse.json();
+            if (retryData.word || retryData.verbalization || retryData.translation) {
+              setResult(retryData);
+              setSuggestions([]);
+              setError(null);
+              setLoading(false);
+              return;
+            }
+          }
+        }
+      } catch (translateErr) {
+        console.warn('Fallback translation failed:', translateErr);
+      }
+      
       setResult(null);
       setSuggestions([]);
       setError(t('wordNotFound') || 'Vārds nav atrasts');
@@ -145,6 +204,13 @@ const SearchWords: React.FC<SearchWordsProps> = ({ onClose }) => {
     }
   };
 
+  React.useEffect(() => {
+    if (autoSearch && initialQuery && !bootSearched) {
+      setBootSearched(true);
+      handleSearch(initialQuery);
+    }
+  }, [autoSearch, initialQuery, bootSearched]);
+
   return (
     <div className="modal" style={{ display: 'flex' }}>
       <div className="modal-content search-words-modal">
@@ -163,7 +229,7 @@ const SearchWords: React.FC<SearchWordsProps> = ({ onClose }) => {
           />
           <button 
             className="search-words-btn"
-            onClick={handleSearch}
+            onClick={() => handleSearch()}
           >
             {t('search') || 'Мeklēt'}
           </button>
