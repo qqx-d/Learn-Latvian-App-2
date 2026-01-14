@@ -37,7 +37,6 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState('trainer');
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [installPromptEvent, setInstallPromptEvent] = useState<any>(null);
-  const [canInstallApp, setCanInstallApp] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
 
   const languageOptions: { code: Language; label: string; short: string }[] = [
@@ -143,7 +142,6 @@ function AppContent() {
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setInstallPromptEvent(e);
-      setCanInstallApp(true);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
@@ -181,7 +179,6 @@ function AppContent() {
       setIsStandalone(true);
     }
     setInstallPromptEvent(null);
-    setCanInstallApp(false);
   };
 
   useEffect(() => {
@@ -374,7 +371,6 @@ function AppContent() {
         userEmail={getCurrentUserEmail()}
         onLogout={handleLogout}
         onResetStats={handleResetStats}
-        canInstallApp={canInstallApp}
         onInstallApp={handleInstallApp}
         showInstallButton={!isStandalone}
         version={APP_VERSION}
